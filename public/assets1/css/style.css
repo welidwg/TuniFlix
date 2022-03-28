@@ -1,0 +1,9 @@
+.fixedTop {
+    position: fixed;
+    transition: 0.2s;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    margin: 8px;
+    color: white;
+}
