@@ -2,6 +2,8 @@
 use App\Models\Movie;
 use App\Models\Serie;
 
+use Illuminate\Support\Str;
+
 switch ($type) {
     case 'Movie':
         $media = Movie::where('idMovie', $id)->first();
@@ -23,16 +25,16 @@ if (Session::has('login')) {
 
 @endphp
 <!DOCTYPE html>
-
 <html lang="en">
 @if ($media)
     @include('nav')
 
     <head>
+
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>{{ env('APP_NAME') }} - {{ $media->Name }} </title>
+        <title>{{ config('app.name') }} - {{ $media->Name }} </title>
         <link rel="stylesheet" href="assets/css/item.css">
 
         <style>
@@ -51,13 +53,17 @@ if (Session::has('login')) {
 
                 <div class="movie_header">
                     <img class="locandina" src="assets/img/posters/{{ $media->Poster }}" />
-                    <h1>{{ $media->Name }}</h1>
+                    <h1>{{ $media->Name }} @if (Session::has('role') && Session::get('role') == 1)
+                            <a target="_blank" href={{ url('/Dash/MovieEdit/' . Crypt::encrypt($media->idMovie)) }}
+                                style="font-size: 18px;text-decoration: none;color:antiquewhite">
+                                <i class="fas fa-pen"></i></a>
+                        @endif
+                    </h1>
                     <h4>{{ $media->DateReleased }}, {{ $media->Director }}</h4>
                     <span class="minutes">{{ $media->Quality }} </span>
                     <span class="minutes">{{ $media->Duration }} min</span>
                     <p class="type">{{ $media->category }}</p>
                 </div>
-
                 <div class="movie_desc">
                     <p class="text">
                         {{ $media->Subject }}
@@ -69,7 +75,17 @@ if (Session::has('login')) {
                         <li><a href="{{ $media->TeaserLink }}" target="__blank" class="btn btn-danger border">Teaser
                                 <i class="fab fa-youtube"></i></a>
                         </li>
-
+                        @php
+                            $idSession = Str::random(10) . '.' . $media->idMovie;
+                            
+                        @endphp
+                        @if (Session::has('login'))
+                            <li><a href="/Session/{{ $idSession }}" target="__blank"
+                                    class="btn btn-danger border">Watch
+                                    with friends
+                                    <i class="fas fa-users"></i></a>
+                            </li>
+                        @endif
                     </ul>
                 </div>
 
@@ -84,12 +100,59 @@ if (Session::has('login')) {
         <div class="row bg-dark " style="padding: 20px;">
             <!-- <embed type="video/webm" src="{{ $media->Links }}" width="400" height="500">-->
             @if (Session::has('login'))
-                <iframe src={{ $media->Links }} allowfullscreen width="100%" height="500px" sandbox="allow-scripts"
-                    frameborder="0"></iframe>
-                <div class="d-flex justify-content-center  mx-auto text-light p-4">
-                    <a href={{ url("/Contact?idMovie=$media->idMovie") }} class="btn btn-danger text-light "> <i
-                            class="fa fa-exclamation-triangle"></i> Report an
-                        issue</a>
+                <style>
+
+
+                </style>
+
+                <ul class="nav nav-pills " id="myTab" style="padding: 6px;flex-direction: row;display: inline-flex">
+                    <li class="nav-item ">
+
+                        @php
+                            $test = explode(',', $media->Links);
+                        @endphp
+                        @if (count($test) != 0)
+
+                            @for ($i = 0; $i < count($test); $i++)
+                                <a class="nav-link @if ($i == 0) active @endif" data-bs-toggle="tab"
+                                    href="#Server{{ $i }}">
+                                    Server {{ $i + 1 }}
+                                </a>
+                            @endfor
+
+                        @endif
+                    </li>
+
+
+                </ul>
+                <div class="tab-content">
+                    @if (count($test) != 0)
+                        @for ($j = 0; $j < count($test); $j++)
+                            <div class="tab-pane fade @if ($j == 0) show active @else '' @endif "
+                                id="Server{{ $j }}">
+                                @if (str_contains($test[$j], '.mp4'))
+                                    <video disableremoteplayback webkit-playsinline playsinline width="100%"
+                                        height="500px" controls>
+                                        <source src={{ $test[$j] }} type="video/mp4">
+                                    </video>
+                                @else
+                                    <iframe src={{ $test[$j] }} allowfullscreen width="100%" height="500px"
+                                        sandbox="allow-scripts allow-popups"></iframe>
+                                @endif
+
+                                <div class="d-flex justify-content-center  mx-auto text-light p-4">
+                                    <a href={{ url("/Contact?idMovie=$media->idMovie") }}
+                                        class="btn btn-danger text-light "> <i class="fa fa-exclamation-triangle"></i>
+                                        Report an
+                                        issue</a>
+                                </div>
+                            </div>
+                        @endfor
+                    @endif
+
+
+
+
                 </div>
             @else
                 <div class="ms-auto text-light " style="font-size: 3vh"> <i class="fa fa-lock"></i> You are not
@@ -106,15 +169,9 @@ if (Session::has('login')) {
                         You might like also
                         @php
                             $exp = explode(',', $media->category);
-                            if (!empty($exp)) {
-                                foreach ($exp as $key => $value) {
-                                    $similar = Movie::where('category', 'like', "%$exp[$key]%")
-                                        ->where('idMovie', '!=', $media->idMovie)
-                                        ->get();
-                                }
-                            } else {
-                                $similar = Movie::where('idMovie', '!=', $media->idMovie)
-                                    ->whereIn('category', $media->category)
+                            foreach ($exp as $key => $value) {
+                                $similar = Movie::where('category', 'like', '%' . $exp[$key] . '%')
+                                    ->where('idMovie', '!=', $media->idMovie)
                                     ->get();
                             }
                             
@@ -126,7 +183,7 @@ if (Session::has('login')) {
                                 @if (!$similar->isEmpty())
                                     @foreach ($similar as $sim)
                                         <div class="item">
-                                            <div class="card p-0">
+                                            <div class="card1 p-0">
                                                 <div class="card-image">
 
                                                     <img src="assets/img/posters/{{ $sim->Poster }}" alt="imgs">
@@ -134,7 +191,7 @@ if (Session::has('login')) {
                                                 <div class="card-content d-flex flex-column align-items-center">
                                                     <h4 class="pt-2">{{ $sim->Name }}</h4>
                                                     <h5>{{ substr($sim->Subject, 0, 150) . '...' }} </h5>
-                                                    <div style="font-weight: bold;margin:4px">
+                                                    <div style="font-weight: thin;margin:4px;font-size: 26px">
                                                         {{ $sim->Quality }}
                                                     </div>
                                                     <ul class="social-icons d-flex justify-content-center">
@@ -142,8 +199,8 @@ if (Session::has('login')) {
 
                                                             <a class="btn btn-primary ms-auto" role="button"
                                                                 style="font-size: 1.5vh;background: rgb(221,21,44);margin: 0px;border-color: rgba(255,255,255,0);border-radius: 23px"
-                                                                href="#">Watch <i class="fa fa-play"
-                                                                    style="margin: 5px;"></i></a>
+                                                                href={{ url('/Watch/Movie/' . $sim->idMovie . '') }}>Watch
+                                                                <i class="fa fa-play" style="margin: 5px;"></i></a>
                                                         </li>
                                                         <li>
 

@@ -4,10 +4,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <base href="{{ url('/public') }}">
 
     <link rel="stylesheet" href="../assets1/bootstrap/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/v/bs5/dt-1.11.5/fh-3.2.2/sc-2.0.5/sb-1.3.2/sp-2.0.0/datatables.min.css" />
+
+    <script type="text/javascript"
+        src="https://cdn.datatables.net/v/bs5/dt-1.11.5/fh-3.2.2/sc-2.0.5/sb-1.3.2/sp-2.0.0/datatables.min.js"></script>
+
+
 
 
     <link rel="stylesheet"
@@ -33,9 +41,9 @@
 
     <body id="page-top">
         <div id="wrapper">
-            <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0"
+            <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion   p-0"
                 style="background: var(--bs-white);box-shadow: -8px 0px 11px 1px rgb(0,0,0);">
-                <div class="container-fluid d-flex flex-column p-0"><a
+                <div class="container-fluid d-flex flex-column p-0" id="navStik"><a
                         class="navbar-brand d-flex flex-column justify-content-center align-items-center sidebar-brand m-0"
                         href="#">
                         <div class="sidebar-brand-icon rotate-n-15"></div><img class="d-none d-md-block"
@@ -110,7 +118,7 @@
                                     style="color: #000000;">Users List</span></a></li>
                         <div class="dropdown-divider"></div>
 
-                        <li class="nav-item"><a class="nav-link" href="#"><i
+                        <li class="nav-item"><a class="nav-link" href={{ url('/Dash/Messages') }}><i
                                     class="fab fa-facebook-messenger" style="color: #000000;"></i><span
                                     style="color: #000000;">Messages Center</span></a>
                             <a class="nav-link" href={{ url('/') }}><i class="fas fa-arrow-circle-left"
@@ -260,7 +268,7 @@
                             </ul>
                         </div>
                     </nav>
-                    <div class="container-fluid bounce animated">
+                    <div class="container-fluid bounce animated" style="width:80vw">
 
 
                         <script src="../assets1/bootstrap/js/bootstrap.min.js"></script>
@@ -268,6 +276,7 @@
                         <script src="../assets1/js/theme.js"></script>
                         <script src="../assets1/js/chart.min.js"></script>
                         <script src="../assets1/js/custom.js"></script>
+
 
     </body>
 @else

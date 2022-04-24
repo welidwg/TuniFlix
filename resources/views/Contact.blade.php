@@ -10,7 +10,7 @@ use App\Models\Movie;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ env('APP_NAME') }} - Contact Us </title>
+    <title>{{ config('app.name') }} - Contact Us </title>
 </head>
 
 <body>
@@ -33,11 +33,11 @@ use App\Models\Movie;
                 </label>
                 <select class="form-control" name="title">
                     @if (Request::has('idMovie'))
-                        <option value="Media Issues">Media Issues</option>
+                        <option value="MediaIssues">Media Issues</option>
                     @else
                         <option value="Complains">Complains</option>
-                        <option value="Media Issues">Media Issues</option>
-                        <option value="Movie Suggestions">Movie Suggestions</option>
+                        <option value="MediaIssues">Media Issues</option>
+                        <option value="MovieSuggestions">Movie Suggestions</option>
                     @endif
 
                 </select>

@@ -10,7 +10,7 @@ use App\Models\Movie;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ env('APP_NAME') }} - Dashboard</title>
+    <title>{{ config('app.name') }} - Dashboard</title>
 
 </head>
 
@@ -80,7 +80,7 @@ use App\Models\Movie;
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-7 col-xl-8">
+        <div class="col-lg-10 col-xl-10 mx-auto">
             <div class="card shadow mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h6 class="fw-bold m-0" style="color: rgb(221,21,44);">TOP 3 WATCHED MOVIES</h6>
@@ -93,8 +93,8 @@ use App\Models\Movie;
                     <canvas class="chart-area" id="top3Movie"> </canvas>
                     <script>
                         const ctx = document.getElementById('top3Movie');
-                        let arr = [''];
-                        let data1 = [0];
+                        let arr = [];
+                        let data1 = [];
                         $.ajax({
                             type: "get",
                             url: "{{ url('/TOP3/Movies') }}",
@@ -106,10 +106,9 @@ use App\Models\Movie;
 
 
                                 });
-                                console.log(arr);
 
                                 const myChart = new Chart(ctx, {
-                                    type: 'line',
+                                    type: 'pie',
                                     data: {
                                         labels: arr,
                                         datasets: [{
@@ -152,7 +151,7 @@ use App\Models\Movie;
                 </div>
             </div>
         </div>
-        <div class="col-lg-5 col-xl-4">
+        <!--<div class="col-lg-5 col-xl-4">
             <div class="card shadow mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h6 class="fw-bold m-0" style="color: rgb(221,22,45);">TOP 3 WATCHED SERIES (Coming Soon)</h6>
@@ -167,7 +166,7 @@ use App\Models\Movie;
                             class="me-2"><i class="fas fa-circle text-info"></i>&nbsp;Refferal</span></div>
                 </div>
             </div>
-        </div>
+        </div>-->
     </div>
 
 </body>

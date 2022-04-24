@@ -11,6 +11,10 @@ use App\Models\Fav;
         
         $movies = Movie::where('Name', 'like', "%$val%")
             ->orWhere('OtherName', 'like', "%$val%")
+            ->orWhere('Director', 'like', "%$val%")
+            ->orWhere('category', 'like', "%$val%")
+            ->orWhere('Quality', 'like', "%$val%")
+            ->orWhere('DateReleased', 'like', "%$val%")
             ->get();
     @endphp
     <!DOCTYPE html>
@@ -21,7 +25,7 @@ use App\Models\Fav;
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>{{ env('APP_NAME') }} - Results </title>
+        <title>{{ config('app.name') }} - Results </title>
         <link rel="stylesheet" href="assets/css/item.css">
 
     </head>
@@ -50,7 +54,7 @@ use App\Models\Fav;
                                     $class = 'far fa-heart';
                                 @endphp
                                 <div class="item">
-                                    <div class="card p-0">
+                                    <div class="card1 p-0">
                                         <div class="card-image">
 
                                             <img src="assets/img/posters/{{ $movie->Poster }}" alt="imgs">

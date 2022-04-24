@@ -19,7 +19,7 @@ $i = 0;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <title>{{ env('APP_NAME') }} - Home </title>
+    <title>{{ config('app.name') }} - Home </title>
     <link rel="stylesheet" href="assets/css/item.css">
     <style>
 
@@ -33,12 +33,7 @@ $i = 0;
     ?>
 
 
-    <div class="movie_card" id="sug">
-
-
-
-
-    </div>
+    @include('sugg')
 
     <div class="col " style="background: #232222;">
         <div style="padding: 32px">
@@ -67,7 +62,7 @@ $i = 0;
                                     
                                 @endphp
                                 <div class="item">
-                                    <div class="card p-0">
+                                    <div class="card1 p-0">
                                         <div class="card-image">
 
                                             <img src="assets/img/posters/{{ $movie->Poster }}" alt="imgs">
@@ -94,8 +89,7 @@ $i = 0;
 
                                                     <button type="submit" class=""
                                                         style="background-color: transparent;border:none"><i
-                                                            id="favIcon{{ $j }}"
-                                                            class="{{ $class }}"
+                                                            id="favIcon{{ $j }}" class="{{ $class }}"
                                                             style="color: rgb(221,21,44)"></i></button>
                                                     @csrf
                                                 </form>

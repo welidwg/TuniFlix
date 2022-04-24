@@ -8,13 +8,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ env('APP_NAME') }} - SignUp </title>
+    <title>{{ config('app.name') }} - SignUp </title>
 </head>
 
 <body>
     <section class="login-clean"
         style="height: 100vh;padding-top: 53px;padding-bottom: 17px;background: rgba(241,247,252,0);">
-        <form id="signup" method="post" style="background: rgba(0,0,0,0.44);padding-top: 5px;margin-top: 0px;">
+        <form  id="signup" method="post" style="background: rgba(0,0,0,0.44);padding-top: 5px;margin-top: 0px;">
             @csrf
             <h2 class="visually-hidden">Login Form</h2>
             <div class="d-flex flex-column illustration"><img class="mx-auto" src="assets/img/Chehia.png"

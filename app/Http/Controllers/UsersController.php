@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Message;
+use App\Models\Fav;
 use Session;
 use Illuminate\Support\Facades\Hash;
 
@@ -31,6 +32,8 @@ class UsersController extends Controller
             $confirm = $req->input("confirm");
             $user = User::where("email", $email)->first();
             if ($user) {
+
+                // redirect()->back()->with('hhgjjjjkljj'); 
                 return \response("This email is already used", 500);
             }
             $user = User::where("username", $username)->first();
@@ -47,10 +50,11 @@ class UsersController extends Controller
             $user->password = $newPass;
             $user->role = 0;
             $user->save();
-
+            // return redirect("/Login"),
             return \response("Account Created Successfully !", 200);
         } catch (\Throwable $th) {
             //throw $th;
+            return \response($th->getMessage(), 500);
         }
         # code...
 
@@ -63,6 +67,10 @@ class UsersController extends Controller
 
             if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
                 $user = User::where("email", $login)->first();
+                //$user->nom;
+                //$user=mysqli_fetch_array(mysqli_query($connect,"SELECT * from userss where email like $email"))7
+                //$user["nom"]
+
             } else {
                 $user = User::where("username", $login)->first();
             }
@@ -73,12 +81,12 @@ class UsersController extends Controller
                 return \response("Please verify your password", 404);
             }
             Session::put("login", true);
-            Session::put("role", $user->role);
+            Session::put("role", $user->role /*$user["role"]*/);
             Session::put("id", $user->idUser);
             Session::put("email", $user->email);
             Session::put("username", $user->username);
             Session::put("avatar", $user->avatar);
-
+            //redirect()->route("/Accueil")->with(["msg"=>"Bienvenue "]);
             return \response("Login Success", 200);
         } catch (\Throwable $th) {
             return \response($th->getMessage(), 500);
@@ -90,17 +98,20 @@ class UsersController extends Controller
         # code...
         Session::flush();
         return redirect(url('/Login/?logout'));
+        // return Redirect::to('/login?LoggedOut');
+
     }
     public function ChangeAvatar(Request $req)
     {
 
         try {
+            
             $email = $req->input("email");
             $user = User::where("email", "=", $email)->first();
 
             if ($req->hasFile("avatar")) {
-                $avatar = $req->file('avatar');
-                $file = $avatar;
+               // $avatar = $req->file('avatar');
+                $file = $req->file('avatar');;
                 $file_name = $file->getClientOriginalName();
                 $newname = $this->random() . $file_name;
                 if ($user->avatar != "") {
@@ -160,6 +171,7 @@ class UsersController extends Controller
                 Session::put("username", $username);
             }
 
+
             return \response("Saved !", 200);
         } catch (\Throwable $th) {
             return \response($th->getMessage(), 500);
@@ -182,6 +194,57 @@ class UsersController extends Controller
             if ($message->save()) {
                 return response("You Message was sent successfully! ", 200);
             }
+        } catch (\Throwable $th) {
+            return \response($th->getMessage(), 500);
+        }
+    }
+    function SendCode(Request $req)
+    {
+        try {
+            $code = $this->random();
+            $email = $req->json("email");
+            $user = User::where("email", $email)->first();
+            if ($user) {
+                $mailer = new \App\Http\Controllers\MailController();
+                $title = "Password Recovery";
+                $body = "
+            $code is ur revovery code";
+
+
+                $mailer->SendMail($email, $title, $body);
+                return response(json_encode(array("code" => $code)), 200);
+            } else {
+                return response("User not found!", 404);
+            }
+        } catch (\Throwable $th) {
+            return \response($th->getMessage(), 500);
+        }
+    }
+    function ChangePass(Request $req)
+    {
+        try {
+            $email = $req->input("email");
+            $pass = Hash::make($req->input("password"));
+            $user = User::where("email", $email)->first();
+            $user->password = $pass;
+            $user->save();
+            return response("Password Recovered !", 200);
+        } catch (\Throwable $th) {
+            return \response($th->getMessage(), 500);
+        }
+    }
+    function DeleteUser($id)
+    { 
+         
+        try {
+            $user = User::where("idUser", $id)->first();
+            $favs = Fav::where("idUser", $id)->get();
+            
+            foreach ($favs as $fav) {
+                $fav->delete();
+            }
+            $user->delete();
+            return response("Deleted !", 200);
         } catch (\Throwable $th) {
             return \response($th->getMessage(), 500);
         }

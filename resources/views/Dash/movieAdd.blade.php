@@ -9,12 +9,12 @@ use App\Models\Category;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ env('APP_NAME') }} - Movies List</title>
+    <title>{{ config('app.name') }} - Movies List</title>
 
 </head>
 
 <body>
-    <div class="card shadow" style="margin: 49px;padding: 0px;">
+    <div class="card shadow" style="margin: 0px;padding: 0px;width: 100%">
         <div class="card-header py-3">
             <p class="m-0 fw-bold" style="color: rgb(221,22,45);">Movie Add</p>
         </div>

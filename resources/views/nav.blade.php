@@ -40,6 +40,10 @@ use App\Models\Category;
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css" />
     <link rel="stylesheet" href="assets/owlcarousel/owl.carousel.min.css">
     <link rel="stylesheet" href="assets/owlcarousel/owl.theme.default.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+
 </head>
 <style>
     a {
@@ -127,14 +131,22 @@ use App\Models\Category;
 
 </style>
 
-<body style="background: url(&quot;assets/img/rel1.jpg&quot;) center / cover no-repeat;">
+<body oncontextmenu="return true" style="background: url(&quot;assets/img/rel1.jpg&quot;) center / cover no-repeat;">
     <div id="loader">
+        @php
+            
+        @endphp
         <div class="mx-auto "
             style="display: flex;flex-direction: column;padding: 20px;color:white;align-items: center;margin: 11px">
-            <img src="assets/img/Chehia.png" alt="TuniFlix" style="width: 150px">
+            <img src="assets/img/logoTX.png" alt="TuniFlix" style="width: 250px">
+
+            <p>
             <div class="spinner-border text-danger " style="" role="status">
                 <span class="sr-only">Loading...</span>
             </div>
+            </p>
+
+
         </div>
 
 
@@ -222,6 +234,40 @@ use App\Models\Category;
                                 <i class="fa fa-user"></i> My Profile
 
                             </a>
+                            <a class="dropdown-item" id="joinSession">
+                                <i class="fas fa-plus"></i> Join a Session
+
+                            </a>
+                            <script>
+                                $('#joinSession').on("click", () => {
+
+                                    alertify.prompt("Join a session", "Please insert below the session ID : ", "", (e, val) => {
+                                        if (val !== "") {
+                                            $.ajax({
+                                                type: "get",
+                                                url: "{{ url('/CheckSession') }}",
+                                                data: {
+                                                    _token: "{{ csrf_token() }}",
+                                                    id: val
+                                                },
+                                                success: function(res) {
+                                                    alertify.success(res);
+                                                    window.location.href = `{{ url('/Session/${val}') }}`
+
+                                                },
+                                                error: (r) => {
+                                                    alertify.error(r.responseText)
+                                                }
+                                            });
+
+                                        } else {
+                                            e.cancel = true
+                                        }
+                                    }, () => {
+
+                                    })
+                                })
+                            </script>
                             <a class="dropdown-item" href={{ url('/Logout') }}><i class="fas fa-sign-out-alt"></i>
                                 Logout</a>
                         </div>
@@ -239,9 +285,6 @@ use App\Models\Category;
         <script src="assets/bootstrap/js/bootstrap.min.js"></script>
         <script src="assets/js/bs-init.js"></script>
         <script src="assets/js/custom.js"></script>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-                integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-
         <script src="assets/owlcarousel/owl.carousel.min.js"></script>
         <script>
             function MustLogin() {
@@ -253,73 +296,7 @@ use App\Models\Category;
                 )
             }
         </script>
-        <script>
-            $(function() {
-                $(window).on("load", GetSuggestion())
 
-                setInterval(() => {
-                    GetSuggestion()
-                }, 1000);
-
-                function GetSuggestion() {
-                    $.ajax({
-                        type: "get",
-                        url: "{{ url('/GetSuggestion') }}",
-                        dataType: "Json",
-                        success: function(res) {
-                            $("#sug").html("").append(`
-                        <div class="info_section">
-                <div class="movie_header">
-                    <span style="color: white">Today's Suggestion</span>
-                    <img class="locandina" src="assets/img/posters/${res.Poster} " />
-                    <h1>${res.Name} </h1>
-                    <h4>${res.DateReleased} , ${res.Director} </h4>
-                    <span class="minutes">${res.Quality} </span>
-                    <span class="minutes">${res.Duration} min</span>
-                    <p class="type">${res.category} </p>
-                </div>
-
-                <div class="movie_desc">
-                    <p class="text">
-                        ${res.Subject}
-                    </p>
-                </div>
-
-                <div class="movie_social">
-                    <ul>
-                        <li><a href="${res.TeaserLink}" target="__blank" class="btn btn-danger  ">Teaser
-                                <i class="fab fa-youtube"></i></a>
-                        </li>
-
-
-                        <li><a data-bss-hover-animate=""
-                                @if (Session::has('login')) href="{{ url('/Watch/Movie') }}/${res . idMovie}"
-                        @else
-                        onclick="MustLogin()" @endif
-                                target="" class="btn btn-danger ">Watch Now
-                                <i class="fas fa-play"></i></a>
-                        </li>
-
-                    </ul>
-                </div>
-           
-
-        </div>
-
-        <div class="blur_back bright_back"
-            style="background: url('assets/img/posters/${res.Poster}');background-repeat: no-repeat;background-position: right;background-size: cover">
-        </div>
-                        `)
-
-                        },
-                        error: (r) => {
-                            console.log(r.responseText);
-                        }
-                    });
-                }
-
-            });
-        </script>
 
 </body>
 
